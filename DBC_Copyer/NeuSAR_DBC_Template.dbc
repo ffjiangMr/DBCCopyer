@@ -1,0 +1,86 @@
+VERSION ""
+
+
+NS_ : 
+	NS_DESC_
+	CM_
+	BA_DEF_
+	BA_
+	VAL_
+	CAT_DEF_
+	CAT_
+	FILTER
+	BA_DEF_DEF_
+	EV_DATA_
+	ENVVAR_DATA_
+	SGTYPE_
+	SGTYPE_VAL_
+	BA_DEF_SGTYPE_
+	BA_SGTYPE_
+	SIG_TYPE_REF_
+	VAL_TABLE_
+	SIG_GROUP_
+	SIG_VALTYPE_
+	SIGTYPE_VALTYPE_
+	BO_TX_BU_
+	BA_DEF_REL_
+	BA_REL_
+	BA_DEF_DEF_REL_
+	BU_SG_REL_
+	BU_EV_REL_
+	BU_BO_REL_
+	SG_MUL_VAL_
+
+BS_:
+
+BU_:
+
+
+
+
+BA_DEF_ BO_  "XCPMsg" ENUM  "No = 0","Yes = 1";
+BA_DEF_ BO_  "DiagResponse" ENUM  "No = 0","Yes = 1";
+BA_DEF_ BO_  "DiagRequest" ENUM  "No = 0","Yes = 1";
+BA_DEF_ BO_  "DiagState" ENUM  "No = 0","Yes = 1";
+BA_DEF_ BO_  "NmAsrMessage" ENUM  "No = 0","Yes = 1";
+BA_DEF_ SG_  "GenSigTimeoutTime" INT 0 65535;
+BA_DEF_ BO_  "GenMsgNrOfRepetition" INT 0 255;
+BA_DEF_ BO_  "GenMsgStartDelayTime" INT 0 65535;
+BA_DEF_ BO_  "GenMsgDelayTime" INT 0 65535;
+BA_DEF_ SG_  "GenSigInactiveValue" INT 0 2147483647;
+BA_DEF_ SG_  "GenSigStartValue" INT 0 2147483647;
+BA_DEF_ BO_  "GenMsgCycleTimeFast" INT 0 65535;
+BA_DEF_ BO_  "GenMsgCycleTime" INT 0 65535;
+BA_DEF_ SG_  "GenSigSendType" ENUM  "Cyclic = 0,","OnWrite = 1,","NotUsed","OnChange = 3,","NotUsed,","NotUsed,","NotUsed,","NoSigSendType = 7";
+BA_DEF_ BO_  "GenMsgSendType" ENUM  "Cyclic = 0,","NotUsed,","NotUsed,","NotUsed,","NotUsed,","NotUsed,","NotUsed,","NotUsed,","NoMsgSendType = 8";
+BA_DEF_ BO_  "GenMsgILSupport" ENUM  "No = 0","Yes = 1";
+BA_DEF_ BO_  "VFrameFormat" ENUM  "CAN Standard","CAN Extended","CAN FD Standard","CAN FD Extended";
+BA_DEF_  "Manufacturer" STRING ;
+BA_DEF_  "NBTNum" INT 8 25;
+BA_DEF_  "SyncJumpWidth" INT 1 4;
+BA_DEF_  "SamplePoint" INT 50 100;
+BA_DEF_  "BaudRate" INT 0 1000000;
+BA_DEF_  "BusType" STRING ;
+BA_DEF_DEF_  "XCPMsg" "No = 0";
+BA_DEF_DEF_  "DiagResponse" "No = 0";
+BA_DEF_DEF_  "DiagRequest" "No = 0";
+BA_DEF_DEF_  "DiagState" "No = 0";
+BA_DEF_DEF_  "NmAsrMessage" "No = 0";
+BA_DEF_DEF_  "GenSigTimeoutTime" 0;
+BA_DEF_DEF_  "GenMsgNrOfRepetition" 0;
+BA_DEF_DEF_  "GenMsgStartDelayTime" 0;
+BA_DEF_DEF_  "GenMsgDelayTime" 0;
+BA_DEF_DEF_  "GenSigInactiveValue" 0;
+BA_DEF_DEF_  "GenSigStartValue" 0;
+BA_DEF_DEF_  "GenMsgCycleTimeFast" 0;
+BA_DEF_DEF_  "GenMsgCycleTime" 0;
+BA_DEF_DEF_  "GenSigSendType" "NoSigSendType = 7";
+BA_DEF_DEF_  "GenMsgSendType" "NoMsgSendType = 8";
+BA_DEF_DEF_  "GenMsgILSupport" "Yes = 1";
+BA_DEF_DEF_  "VFrameFormat" "CAN Standard";
+BA_DEF_DEF_  "Manufacturer" "NeuSAR";
+BA_DEF_DEF_  "NBTNum" 20;
+BA_DEF_DEF_  "SyncJumpWidth" 4;
+BA_DEF_DEF_  "SamplePoint" 80;
+BA_DEF_DEF_  "BaudRate" 500000;
+BA_DEF_DEF_  "BusType" "CAN";
