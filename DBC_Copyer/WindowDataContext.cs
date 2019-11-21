@@ -144,8 +144,17 @@
                     {
                         this.Logger.Info($"准备向源文件 \" {item} \"中导入数据 ");
                         String dbcContent;
-                        var attributeList = this.GetInsertAttribute(item, out dbcContent);                        
-                        var dbcNewFile = item.Insert(item.LastIndexOf('.'), "_New");
+                        var attributeList = this.GetInsertAttribute(item, out dbcContent);
+                        var dbcNewFile = item.Insert(item.LastIndexOf('.'), "_NeuSAR");
+                        if (File.Exists(dbcNewFile) == true)
+                        {
+                            this.Logger.Error($"目标文件 {dbcNewFile} 已存在");
+                            if (MessageBox.Show("目标文件已存在，是否继续?", "警告", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning) != MessageBoxResult.Yes)
+                            {
+                                this.Logger.Warn($"手动取消导入操作，原因：目标文件 {dbcNewFile} 已存在！");
+                                continue;
+                            }
+                        }
                         using (var writer = new FileStream(dbcNewFile, FileMode.Create, FileAccess.Write))
                         {
                             foreach (var attributeName in attributeList)
@@ -206,7 +215,7 @@
             {
                 String name = attributeName;
                 var index = this.FindIndex(ref dbcContent, AttributeDefinitionSymple);
-                dbcContent = dbcContent.Insert(index, (this.attributeList.Find(a => a.Name == name)).Content + Environment.NewLine);                
+                dbcContent = dbcContent.Insert(index, (this.attributeList.Find(a => a.Name == name)).Content + Environment.NewLine);
                 index = this.FindIndex(ref dbcContent, AttributeDefaultSymple);
                 dbcContent = dbcContent.Insert(index, this.attributeDefaultMap[attributeName] + Environment.NewLine);
             }
