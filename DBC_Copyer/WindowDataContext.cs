@@ -22,7 +22,9 @@
     {
 
         public static readonly String AttributeDefinitionPattern = "^BA_DEF_[ ]+((BU_)|(BO_)|(SG_)|(EV_))?[ ]+\"(\\w+)\"[ ]+(((INT)[ ]+([+|-]?\\d+)[ ]+([+|-]?\\d+))|((HEX)[ ]+([+|-]?\\d+)[ ]+([+|-]?\\d+))|((FLOAT)[ ]+([+|-]?\\d+.?\\d*)[ ]+([+|-]?\\d+.?\\d*))|(STRING)|((ENUM)[ ]+(\"((([^\"\\s])|([\\s\\u4e00-\\u9fa5]))*)\"([ ]*,\"((([^\"\\s])|([\\s\\u4e00-\\u9fa5]))*)\")*)))[ ]*;$";
+        public static readonly String AttributeDefinitionRelPattern = "^BA_DEF_REL_[ ]+((BU_SG_REL_)|(BU_BO_REL_))[ ]+\"(\\w+)\"[ ]+(((INT)[ ]+([+|-]?\\d+)[ ]+([+|-]?\\d+))|((HEX)[ ]+([+|-]?\\d+)[ ]+([+|-]?\\d+))|((FLOAT)[ ]+([+|-]?\\d+.?\\d*)[ ]+([+|-]?\\d+.?\\d*))|(STRING)|((ENUM)[ ]+(\"((([^\"\\s])|([\\s\\u4e00-\\u9fa5]))*)\"([ ]*,\"((([^\"\\s])|([\\s\\u4e00-\\u9fa5]))*)\")*)))[ ]*;$";
         public static readonly String AttributeDefaultPattern = "^BA_DEF_DEF_[ ]+\"(\\w+)\"[ ]+\"?(([+|-]?\\d*.?\\d*)|((([^\"\\s])|([\\s\\u4e00-\\u9fa5]))*))\"?;$";
+        public static readonly String AttributeDefaultRelPattern = "^BA_DEF_DEF_REL_[ ]+\"(\\w+)\"[ ]+\"?(([+|-]?\\d*.?\\d*)|((([^\"\\s])|([\\s\\u4e00-\\u9fa5]))*))\"?;$";
         public static readonly String AttributeDefinitionSymple = "BA_DEF_ ";
         public static readonly String AttributeDefaultSymple = "BA_DEF_DEF_ ";
         public static readonly String AttributeSymple = "BA_ ";
@@ -80,14 +82,17 @@
                     {
                         this.Logger.Debug($"读取内容为：{content}");
                         var attribute = Regex.Match(content.Trim(), AttributeDefinitionPattern);
-                        if (attribute.Success == true)
+                        var attributeRel = Regex.Match(content.Trim(), AttributeDefinitionRelPattern);
+                        if ((attribute.Success == true) || (attributeRel.Success == true))
                         {
                             var dbcAttribute = new DBCAttribute()
                             {
                                 Content = content,
-                                Name = attribute.Groups[6].ToString(),
-                                ObjectType = attribute.Groups[1].ToString(),
-                                ValueType = attribute.Groups[9].ToString() + attribute.Groups[13].ToString() + attribute.Groups[17].ToString() + attribute.Groups[20].ToString() + attribute.Groups[22].ToString(),
+                                Name = attribute.Success == true ? attribute.Groups[6].ToString() : attributeRel.Groups[4].ToString(),
+                                ObjectType = attribute.Success == true ? attribute.Groups[1].ToString() : attributeRel.Groups[1].ToString(),
+                                ValueType = attribute.Success == true ?
+                                            attribute.Groups[9].ToString() + attribute.Groups[13].ToString() + attribute.Groups[17].ToString() + attribute.Groups[20].ToString() + attribute.Groups[22].ToString() :
+                                            attributeRel.Groups[7].ToString() + attributeRel.Groups[11].ToString() + attributeRel.Groups[15].ToString() + attributeRel.Groups[18].ToString() + attributeRel.Groups[20].ToString(),
                             };
                             this.Logger.Info($"从模版文件中找到 {dbcAttribute.Name} 属性");
                             this.attributeList.Add(dbcAttribute);
@@ -95,10 +100,12 @@
                         else
                         {
                             attribute = Regex.Match(content.Trim(), AttributeDefaultPattern);
-                            if (attribute.Success == true)
+                            attributeRel = Regex.Match(content.Trim(), AttributeDefaultRelPattern);
+                            var temp = attribute.Success == true ? attribute : attributeRel;
+                            if (temp.Success == true)
                             {
-                                this.attributeDefaultMap[attribute.Groups[1].ToString()] = content;
-                                this.Logger.Info($"从模版文件中找到 {attribute.Groups[1].ToString()} 属性默认值");
+                                this.attributeDefaultMap[temp.Groups[1].ToString()] = content;
+                                this.Logger.Info($"从模版文件中找到 {temp.Groups[1].ToString()} 属性默认值");
                             }
                         }
                         content = reader.ReadLine();
@@ -278,13 +285,15 @@
                     dbcContent += content;
                     dbcContent += Environment.NewLine;
                     var attribute = Regex.Match(content.Trim(), AttributeDefinitionPattern);
-                    if (attribute.Success == true)
+                    var attributeRel = Regex.Match(content.Trim(), AttributeDefinitionRelPattern);
+                    var attributeName = attribute.Success ? attribute.Groups[6].ToString() : attributeRel.Groups[4].ToString();
+                    if ((attribute.Success == true) || (attributeRel.Success == true))
                     {
-                        this.Logger.Info($"从源文件\" {filePath} \" 中找到：{attribute.Groups[6].ToString()} 属性");
-                        if (result.Contains(attribute.Groups[6].ToString()))
+                        this.Logger.Info($"从源文件\" {filePath} \" 中找到：{attributeName} 属性");
+                        if (result.Contains(attributeName))
                         {
-                            result.Remove(attribute.Groups[6].ToString());
-                            this.Logger.Warn($"DBC源文件\" {filePath} \" 中存在模版中同名属性：{attribute.Groups[6].ToString()},该属性跳过拷贝！");
+                            result.Remove(attributeName);
+                            this.Logger.Warn($"DBC源文件\" {filePath} \" 中存在模版中同名属性：{attributeName},该属性跳过拷贝！");
                         }
                     }
                     content = reader.ReadLine();
